@@ -14,6 +14,9 @@ public class EditDistanceUtils {
      * @return Completed Memoization structure for editDistance(s0, s1)
      */
     public static int[][] getEditDistTable(String s0, String s1) {
+        // >> [AF] Improper Java variable naming: remember to use camelCase to capitalize and
+        // more descriptive variable names than single letters -- something like editDistTable
+        // or even just table would've been better here (-1)
         int[][] T = new int[s0.length() + 1][s1.length() + 1];
 
         for (int r = 0; r <= s0.length(); r++) {
@@ -24,6 +27,11 @@ public class EditDistanceUtils {
         }
         for (int r = 1; r <= s0.length(); r++) {
             for (int c = 1; c <= s1.length(); c++) {
+                // >> [AF] Another case of poor variable names here: why use e,f,g,h when you
+                // could label these to indicate their purpose, e.g., deletionDist, insertionDist, etc.
+                // >> [AF] Better than this logic, which requires a bunch of variables and then
+                // several calls to Math.min at the end -- just store the scores in a List, and then
+                // take the min (e.g., using Collections.min) of all scores in that list at the end (-0.5)
                 int e = Integer.MAX_VALUE;
                 int f = Integer.MAX_VALUE;
                 int g = Integer.MAX_VALUE;
@@ -93,6 +101,10 @@ public class EditDistanceUtils {
                     replacement = table[r - 1][c - 1] + 1;
                     if (replacement == currPos) {
                         minimalEdits.add("R");
+                        // >> [AF] Notice that you both update currPos with the row and column offsets
+                        // here and *then* update the values of r and c by the same offsets -- since you
+                        // repeat the currPos update in every if-statement, you could just save it until
+                        // the end to avoid repetition (-0.5)
                         currPos = table[r - 1][c - 1];
                         r--;
                         c--;
@@ -153,3 +165,28 @@ public class EditDistanceUtils {
     }
 
 }
+
+// ===================================================
+// >>> [AF] Summary
+// Excellent submission that has a ton to like and was
+// obviously well-tested. Generally clean style (apart
+// from a few quibbles noted above), and shows
+// strong command of programming foundations alongside
+// data structure and algorithmic concepts. Keep up
+// the great work!
+// ---------------------------------------------------
+// >>> [AF] Style Checklist
+// [X] = Good, [~] = Mixed bag, [ ] = Needs improvement
+//
+// [ ] Variables and helper methods named and used well
+// [X] Proper and consistent indentation and spacing
+// [X] Proper JavaDocs provided for ALL methods
+// [~] Logic is adequately simplified
+// [~] Code repetition is kept to a minimum
+// ---------------------------------------------------
+// Correctness:          100 / 100
+// -> EditDistUtils:      20 / 20  (-2 / missed test)
+// -> DistlePlayer:      277 / 265 (-0.5 / below threshold; max -30)
+// Style Penalty:         -2
+// Total:                 98 / 100
+// ===================================================
